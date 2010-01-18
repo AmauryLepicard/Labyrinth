@@ -1,5 +1,5 @@
 import sys, pygame, random
-import labyrinth, agent
+import labyrinth, agent, utils
 pygame.init()
 
 
@@ -13,14 +13,6 @@ size = width, height = tileWidth * labWidth, tileHeight * labHeight
 screen = pygame.display.set_mode(size)
 black = 0, 0, 0
 
-def getGridCoords(mx, my):
-    return mx / tileWidth, my / tileHeight
-
-def pause():
-    while 1:
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                return
 
 tileset = pygame.image.load("data/dungeon.png")
 agentImage = {}
@@ -51,46 +43,48 @@ cpt=0
 #    print "agent",cpt,":",agents[-1]
 
 a = agent.Agent(tileWidth * 0, tileHeight * 0, myLab.getCaseAt(0, 0), 1)
-a.pathToGoal = myLab.computePath(myLab.getCaseAt(a.x / tileWidth, a.y / tileHeight), myLab.getCaseAt(random.randint(0, labWidth - 1), random.randint(0, labWidth - 1)))
+a.pathToGoal = myLab.computePath(myLab.getCaseAt(a.x / tileWidth, a.y / tileHeight), myLab.getCaseAt(0, 6))
+a.globalGoal = myLab.getCaseAt(0, 0)
 agents.append(a)
-a = agent.Agent(tileWidth * 3, tileHeight * 3, myLab.getCaseAt(3, 3), 2)
-a.pathToGoal = myLab.computePath(myLab.getCaseAt(a.x / tileWidth, a.y / tileHeight), myLab.getCaseAt(random.randint(0, labWidth - 1), random.randint(0, labWidth - 1)))
+a = agent.Agent(tileWidth * 0, tileHeight * 1, myLab.getCaseAt(0, 1), 2)
+a.pathToGoal = myLab.computePath(myLab.getCaseAt(a.x / tileWidth, a.y / tileHeight), myLab.getCaseAt(6, 0))
+a.globalGoal = myLab.getCaseAt(6, 0)
 agents.append(a)
 
 oldTick = 0
-
+tickNumber = 0
 while 1:
     #processing events
-#    print "tick"
+#    print "tick",
     for event in pygame.event.get():
         if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE) or (event.type == pygame.KEYDOWN and event.key == pygame.K_q):
             print "exiting..."
             sys.exit()
-        if event.type == labyrinth.ARRIVED:
+            
+        if event.type == utils.ARRIVED:
             agent = event.dict['agent']
-#           print i,"new path :",
-            agent.pathToGoal = myLab.computePath(myLab.getCaseAt(agent.x / tileWidth, agent.y / tileHeight), myLab.getCaseAt(random.randint(0, labWidth - 1), random.randint(0, labWidth - 1)))
-        if event.type == labyrinth.COLLISION:
+            agent.globalGoal = myLab.getCaseAt(random.randint(0, labWidth - 1), random.randint(0, labWidth - 1))
+            agent.pathToGoal = myLab.computePath(myLab.getCaseAt(agent.x / tileWidth, agent.y / tileHeight), agent.globalGoal)
+            
+#            print tickNumber, agent.id, "arrive","new path : [", utils.pathToString(agent.pathToGoal), "]"
+        
+        if event.type == utils.COLLISION:
             agent = event.dict['agent']
-            print agent.id,"collision : ancien chemin",
-            for c in agent.pathToGoal:
-                print "("+str(c.x)+","+str(c.y)+")",
-            newPath = myLab.computePath(agent.currentCase, agent.pathToGoal[len(agent.pathToGoal)-1])
-            if newPath!=None:
-                agent.pathToGoal = newPath
-            print agent.id,"collision : nouveau chemin",
-            for c in agent.pathToGoal:
-                print "("+str(c.x)+","+str(c.y)+")",
-            print "\n"
+#            print tickNumber, agent.id,"collision : old path : [", utils.pathToString(agent.pathToGoal), "]"
+            newPath = myLab.computePath(agent.currentCase, agent.globalGoal)
+            if len(newPath) == 0:
+                agent.globalGoal = None
+            agent.pathToGoal = newPath
+#                print tickNumber, agent.id,"collision : new path : [", utils.pathToString(agent.pathToGoal), "]"
+#            else:
+#                print tickNumber, "pas de chemin disponible"
+
         if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-            pause()
+            utils.pause()
     
     #updating agents positions
     for i in range(len(agents)):
-#        print "updating", i
         a = agents[i]
-#        if len(a.pathToGoal) != 0:
-#            print "Agent " + str(i), "(", a.x / tileWidth, a.y / tileHeight, ")   Next : ", a.pathToGoal[0].x, a.pathToGoal[0].y
         a.currentCase.content = None
         a.updatePos()
         a.currentCase = myLab.getCaseAt(a.x / tileWidth, a.y / tileHeight)
@@ -101,8 +95,7 @@ while 1:
     for a in agents:
         screen.blit(agentImage[a.dir], pygame.Rect(a.x, a.y, tileWidth, tileHeight))
         if len(a.pathToGoal) != 0:
-#            print "len pathtogoal", len(a.pathToGoal), a.pathToGoal[len(a.pathToGoal)-1]
             screen.blit(goalImage[a.id % 2], pygame.Rect(a.pathToGoal[len(a.pathToGoal)-1].x * tileWidth, a.pathToGoal[len(a.pathToGoal)-1].y * tileHeight, tileWidth, tileHeight))
     pygame.display.flip()
-    pygame.time.wait(20)
-
+#    pygame.time.wait(20)
+    tickNumber += 1
