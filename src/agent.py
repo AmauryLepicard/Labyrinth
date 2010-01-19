@@ -1,0 +1,82 @@
+import pygame, random, utils
+from mailServer import mail
+from labyrinth import lab
+
+#TODO : systeme de satisfaction
+#       -calculer score en fonction des objectifs atteints
+
+class Agent:
+    def __init__(self, x, y, c, i):
+        self.x = x
+        self.y = y
+        self.dir = "N"
+        self.pathToGoal = []
+        self.globalGoal = None
+        self.goalReached = False
+        self.currentCase = c
+        self.speed = 2
+        self.id = i
+        self.currentDecision = "moveToGoal"
+        
+    def update(self):
+        self.checkGoals()
+        self.checkMessages()
+        self.updateKnowledge()
+        self.takeDecision()
+        self.act()
+        
+    def checkGoals(self):
+        if self.currentDecision == "moveToGoal":
+            if self.currentCase == self.globalGoal:
+#                print "goal reached", str(self.currentCase)
+                self.goalReached = True
+    
+    def checkMessages(self):
+        for m in mail.getMessages(self):
+            print m[0].id, "->", self.id, ":", m[1]
+    
+    def updateKnowledge(self):
+        pass
+    
+    def takeDecision(self):
+        if self.goalReached:
+            self.globalGoal = lab.getCaseAt(random.randint(0, lab.width-1), random.randint(0, lab.height-1))
+            self.currentDecision = "moveToGoal"
+            
+    
+    def act(self):
+        if self.currentDecision == "moveToGoal":
+            self.updatePos()
+        
+    def updatePos(self):
+#        print "updating pos ", self.id, len(self.pathToGoal)
+        if len(self.pathToGoal) != 0:
+            if self.pathToGoal[0].content != None:
+#                print "Collision : ", self.id, "avec",self.pathToGoal[0].content.id
+                mail.addMessage(self, self.pathToGoal[0].content, "you're blocking me, sucker !!")
+                pygame.event.post(pygame.event.Event(utils.COLLISION, {"agent" : self, "collider" : self.pathToGoal[0].content}))
+                return
+            else:
+                xgoal = self.pathToGoal[0].x * utils.tileSize
+                ygoal = self.pathToGoal[0].y * utils.tileSize
+                
+                if self.x > xgoal:
+                    self.dir = "W"
+                    self.x -= self.speed
+                if self.x < xgoal:
+                    self.dir = "E"
+                    self.x += self.speed
+                if self.y > ygoal:
+                    self.dir = "N"
+                    self.y -= self.speed
+                if self.y < ygoal:
+                    self.dir = "S"
+                    self.y += self.speed
+    
+                if self.x == xgoal and self.y == ygoal:
+                    self.pathToGoal[0].content = self
+                    self.pathToGoal = self.pathToGoal[1:]                
+        if len(self.pathToGoal) == 0:
+            pygame.event.post(pygame.event.Event(utils.ARRIVED, {"agent" : self, "goal" : self.currentCase}))
+            return
+
