@@ -18,6 +18,10 @@ class Agent:
         self.id = i
         self.currentDecision = "moveToGoal"
         
+    def __str__(self):
+        return "Agent " + self.id + " at [" + str(self.x) + "," + str(self.y) + "]"
+
+        
     def update(self):
         self.checkGoals()
         self.checkMessages()

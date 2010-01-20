@@ -121,7 +121,7 @@ class Game:
                         end = (a.pathToGoal[i + 1].x + 0.5) * self.tileWidth, (a.pathToGoal[i + 1].y + 0.5) * self.tileHeight
                         pygame.draw.line(self.screen, (255,0,0), start, end) 
 #                        self.screen.blit(self.dotImage, pygame.Rect(c.x * self.tileWidth, c.y * self.tileHeight, self.tileWidth, self.tileHeight));
-#                    self.screen.blit(self.goalImage[a.id % 2], pygame.Rect(a.pathToGoal[len(a.pathToGoal)-1].x * self.tileWidth, a.pathToGoal[len(a.pathToGoal)-1].y * self.tileHeight, self.tileWidth, self.tileHeight))
+                    self.screen.blit(self.goalImage[0], pygame.Rect(a.pathToGoal[len(a.pathToGoal)-1].x * self.tileWidth, a.pathToGoal[len(a.pathToGoal)-1].y * self.tileHeight, self.tileWidth, self.tileHeight))
             pygame.display.flip()
         #    pygame.time.wait(20)
             tickNumber += 1
