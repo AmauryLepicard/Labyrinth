@@ -1,3 +1,4 @@
 syntax: glob
 ./src/*.pyc
 ./src/*.pyo
+./.hgrc
