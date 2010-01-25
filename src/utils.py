@@ -1,4 +1,4 @@
-import math
+import math, pygame
 
 COLLISION = 42
 ARRIVED = 43
@@ -6,13 +6,13 @@ ARRIVED = 43
 tileSize = 32
 
 def getDistance((xa, ya), (xb, yb)):
-    return (xa-xb)*(xa-xb)+(ya-yb)*(ya-yb)
+    return (xa - xb) * (xa - xb) + (ya - yb) * (ya - yb)
 
 def getDistManhattan((xa, ya), (xb, yb)):
-    return math.fabs(xa-xb)+math.fabs(ya-yb)
+    return math.fabs(xa - xb) + math.fabs(ya - yb)
 
 def getGridCoords(mx, my):
-    return mx / tileWidth, my / tileHeight
+    return mx / load('tileSize'), my / load('tileSize')
 
 def pause():
     while 1:
@@ -34,5 +34,5 @@ def load(paramName):
         if len(c) == 3 and c[0] == paramName:
             return int(c[2])
         c = f.readline().split()
-    print "bug",paramName
+    print "bug", paramName
 

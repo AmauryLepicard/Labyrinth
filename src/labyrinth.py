@@ -11,7 +11,7 @@ class Labyrinth:
         for i in range(0, self.width):
             ligne = []
             for j in range(0, self.height):
-                ligne.append(case.Case("a"+str(i + j * w), i, j))
+                ligne.append(case.Case("a" + str(i + j * w), i, j))
             self.caseArray.append(ligne)
 
         print "done"
@@ -29,7 +29,7 @@ class Labyrinth:
                 temp.append(0)
             visitedArray.append(temp)
         visitedArray[startx][starty] = 0
-                
+
         while len(tempList) != 0:
             counter += 1
             orig = tempList.pop(0)
@@ -69,7 +69,7 @@ class Labyrinth:
 #                    s += "|"
 #                else:
 #                    s += " "delta = [[1, 0], [-1, 0], [0, 1], [0, -1]]
-        
+
 #                s += " "
 #            tmp += s + "\n"
             s = ""
@@ -107,7 +107,7 @@ class Labyrinth:
                 print
 
 
- 
+
     def getCaseAt(self, x, y):
         return self.caseArray[x][y]
 
@@ -165,24 +165,24 @@ class Labyrinth:
                             parent[n] = current
                             estimate.append(e)
         return []
-    
+
     def save(self, fileName):
         f = open(fileName, 'w')
         for i in range(self.width):
             s = ""
             for j in range(self.height):
-                s += str(self.caseArray[i][j].getImageCode())+" "
+                s += str(self.caseArray[i][j].getImageCode()) + " "
             s += "\n"
             f.write(s)
         f.close()
-        
+
 def load(fileName):
     f = open(fileName, 'r')
     codeArray = []
     s = f.readline()
     while len(s) != 0:
         tab = s.split()
-        temp=[]
+        temp = []
         for sn in tab:
             temp.append(int(sn))
         codeArray.append(temp)
@@ -193,8 +193,8 @@ def load(fileName):
     for i in range(l.width):
         for j in range(l.height):
             for k in range(4):
-                if codeArray[i][j]%2 == 1:
-                    l.caseArray[i][j].destinations[dir[k]] = l.caseArray[i+delta[k][0]][j+delta[k][1]]
+                if codeArray[i][j] % 2 == 1:
+                    l.caseArray[i][j].destinations[dir[k]] = l.caseArray[i + delta[k][0]][j + delta[k][1]]
                 codeArray[i][j] = codeArray[i][j] / 2
     return l
 

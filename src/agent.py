@@ -17,41 +17,40 @@ class Agent:
         self.speed = 2
         self.id = i
         self.currentDecision = "moveToGoal"
-        
+
     def __str__(self):
         return "Agent " + self.id + " at [" + str(self.x) + "," + str(self.y) + "]"
 
-        
+
     def update(self):
         self.checkGoals()
         self.checkMessages()
         self.updateKnowledge()
         self.takeDecision()
         self.act()
-        
+
     def checkGoals(self):
         if self.currentDecision == "moveToGoal":
             if self.currentCase == self.globalGoal:
 #                print "goal reached", str(self.currentCase)
                 self.goalReached = True
-    
+
     def checkMessages(self):
         for m in mail.getMessages(self):
             print m[0].id, "->", self.id, ":", m[1]
-    
+
     def updateKnowledge(self):
         pass
-    
+
     def takeDecision(self):
         if self.goalReached:
-            self.globalGoal = lab.getCaseAt(random.randint(0, lab.width-1), random.randint(0, lab.height-1))
+            self.globalGoal = lab.getCaseAt(random.randint(0, lab.width - 1), random.randint(0, lab.height - 1))
             self.currentDecision = "moveToGoal"
-            
-    
+
     def act(self):
         if self.currentDecision == "moveToGoal":
             self.updatePos()
-        
+
     def updatePos(self):
 #        print "updating pos ", self.id, len(self.pathToGoal)
         if len(self.pathToGoal) != 0:
@@ -63,7 +62,7 @@ class Agent:
             else:
                 xgoal = self.pathToGoal[0].x * utils.tileSize
                 ygoal = self.pathToGoal[0].y * utils.tileSize
-                
+
                 if self.x > xgoal:
                     self.dir = "W"
                     self.x -= self.speed
@@ -76,10 +75,11 @@ class Agent:
                 if self.y < ygoal:
                     self.dir = "S"
                     self.y += self.speed
-    
+
                 if self.x == xgoal and self.y == ygoal:
                     self.pathToGoal[0].content = self
-                    self.pathToGoal = self.pathToGoal[1:]                
+                    self.pathToGoal = self.pathToGoal[1:]
+
         if len(self.pathToGoal) == 0:
             pygame.event.post(pygame.event.Event(utils.ARRIVED, {"agent" : self, "goal" : self.currentCase}))
             return
