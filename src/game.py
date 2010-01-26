@@ -78,12 +78,11 @@ class Game:
                     sys.exit()
 
                 if event.type == utils.ARRIVED:
-                    print event.type, pygame.event.event_name(event.type)
                     agent = event.dict['agent']
                     agent.globalGoal = lab.getCaseAt(random.randint(0, lab.width - 1), random.randint(0, lab.height - 1))
                     agent.pathToGoal = lab.computePath(lab.getCaseAt(agent.x / self.tileWidth, agent.y / self.tileHeight), agent.globalGoal)
 
-                    print tickNumber, agent.id, "arrive", "new path : [", utils.pathToString(agent.pathToGoal), "]"
+#                    print tickNumber, agent.id, "arrive", "new path : [", utils.pathToString(agent.pathToGoal), "]"
 
                 if event.type == utils.COLLISION:
                     agent = event.dict['agent']

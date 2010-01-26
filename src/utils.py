@@ -1,7 +1,7 @@
 import math, pygame
 
-COLLISION = 42
-ARRIVED = 43
+COLLISION = 24
+ARRIVED = 25
 
 tileSize = 32
 
