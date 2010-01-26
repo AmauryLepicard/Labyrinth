@@ -1,5 +1,6 @@
 import case
 import random, utils
+from params import params
 
 
 class Labyrinth:
@@ -158,7 +159,7 @@ class Labyrinth:
                         e = dist + 1 + utils.getDistManhattan((n.x, n.y), (end.x, end.y))
                         if n in openList:
                             if e < estimate[openList.index(n)]:
-                                estimate[openList.index(n)] = e
+                                estimate[openList.index(n)] = dist + 1
                                 parent[n] = current
                         else:
                             openList.append(n)
@@ -198,4 +199,4 @@ def load(fileName):
                 codeArray[i][j] = codeArray[i][j] / 2
     return l
 
-lab = Labyrinth(utils.load('labWidth'), utils.load('labHeight'))
+lab = Labyrinth(params['labWidth'], params['labHeight'])

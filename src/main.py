@@ -1,7 +1,9 @@
 import pygame
-import game, utils
+import game
+from params import params
 
 pygame.init()
 
-myGame = game.Game(utils.load('agentsNum'), utils.load('debug'))
+myGame = game.Game(params['agentsNum'], params['debug'])
 myGame.run()
+print "coucou"

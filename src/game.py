@@ -1,5 +1,6 @@
 import agent, utils
 from labyrinth import lab
+from params import params
 #from mailServer import mail
 import sys, random, pygame
 
@@ -9,13 +10,13 @@ class Game:
     def __init__(self, n, debug):
 #        lab.width = w   
 #        lab.height = h
-        self.tileWidth = utils.tileSize
-        self.tileHeight = utils.tileSize
+        self.tileWidth = params['tileSize']
+        self.tileHeight = params['tileSize']
         self.agentNumber = n
         self.debug = debug
 
 #        from labyrinth import lab
-        lab.buildPaths(2, 2)
+        lab.buildPaths(0, 0)
         lab.save("lab.map")
 #        lab = labyrinth.load("lab.map")
 

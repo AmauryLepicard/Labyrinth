@@ -1,6 +1,7 @@
 import pygame, random, utils
 from mailServer import mail
 from labyrinth import lab
+from params import params
 
 #TODO : systeme de satisfaction
 #       -calculer score en fonction des objectifs atteints
@@ -60,8 +61,8 @@ class Agent:
                 pygame.event.post(pygame.event.Event(utils.COLLISION, {"agent" : self, "collider" : self.pathToGoal[0].content}))
                 return
             else:
-                xgoal = self.pathToGoal[0].x * utils.tileSize
-                ygoal = self.pathToGoal[0].y * utils.tileSize
+                xgoal = self.pathToGoal[0].x * params['tileSize']
+                ygoal = self.pathToGoal[0].y * params['tileSize']
 
                 if self.x > xgoal:
                     self.dir = "W"
