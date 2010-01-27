@@ -10,15 +10,13 @@ class Game:
     def __init__(self, n, debug):
 #        lab.width = w   
 #        lab.height = h
-        self.tileWidth = params['tileSize']
-        self.tileHeight = params['tileSize']
+        self.tileWidth = params.dict['tileSize']
+        self.tileHeight = params.dict['tileSize']
         self.agentNumber = n
         self.debug = debug
 
-#        from labyrinth import lab
         lab.buildPaths(0, 0)
         lab.save("lab.map")
-#        lab = labyrinth.load("lab.map")
 
         size = self.tileWidth * lab.width, self.tileHeight * lab.height
         self.screen = pygame.display.set_mode(size)

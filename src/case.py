@@ -6,10 +6,12 @@ class Case:
         self.y = y
         self.content = None
         self.id = i
+        self.h = 0
+        self.g = 0
 
     def __str__(self):
         return "Case " + self.id + " at [" + str(self.x) + "," + str(self.y) + "]"
-        
+
     def getImageCode(self):
         s = 0
         i = 1

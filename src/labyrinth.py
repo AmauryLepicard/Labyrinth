@@ -125,22 +125,22 @@ class Labyrinth:
     def computePath(self, start, end):
 #        print "Computing path from ("+str(start.x)+","+str(start.y)+") to ("+str(end.x)+","+str(end.y)+") ...",
         openList = [start]
-        estimate = [utils.getDistManhattan((start.x, start.y), (end.x, end.y))]
+        g = [0]
+        h = [utils.getDistManhattan((start.x, start.y), (end.x, end.y))]
         closedList = []
         parent = {}
         parent[start] = None
         while len(openList) != 0:
             id = 0
-            dist = 100000000
+            dist = -1
             #Getting the index of the node which is the closest of the end
-            for i in range(len(estimate)):
-                if estimate[i] < dist:
-                    id = i
-                    dist = estimate[i]
-            current = openList[id]
+            for c in openList:
+                if (dist == -1) or (c.g + c.h < dist):
+                    dist = c.g + c.h
+                    current = c
+
             #adding the node to the closed list, and removing the node from open list
             closedList.append(current)
-            del estimate[id]
             del openList[id]
 
             #if the node is the goal, stop and build the path
@@ -156,15 +156,16 @@ class Labyrinth:
             for n in current.getNeighbors():
                 if n.content == None:
                     if n not in closedList:
-                        e = dist + 1 + utils.getDistManhattan((n.x, n.y), (end.x, end.y))
+                        e = current.g + 1 + utils.getDistManhattan((n.x, n.y), (end.x, end.y))
                         if n in openList:
-                            if e < estimate[openList.index(n)]:
-                                estimate[openList.index(n)] = dist + 1
+                            if e < n.h + n.g:
+                                n.g = current.g + 1
+                                n.h = utils.getDistManhattan((n.x, n.y), (end.x, end.y))
                                 parent[n] = current
                         else:
                             openList.append(n)
                             parent[n] = current
-                            estimate.append(e)
+                            h.append(e)
         return []
 
     def save(self, fileName):
@@ -199,4 +200,4 @@ def load(fileName):
                 codeArray[i][j] = codeArray[i][j] / 2
     return l
 
-lab = Labyrinth(params['labWidth'], params['labHeight'])
+lab = Labyrinth(params.dict['labWidth'], params.dict['labHeight'])

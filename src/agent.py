@@ -18,6 +18,8 @@ class Agent:
         self.speed = 2
         self.id = i
         self.currentDecision = "moveToGoal"
+        self.beliefs = {'health' : 1.0, 'hunger' : 0.0, 'minotaurCoords' : (0, 0), 'exitCoords' : (0, 0), 'labyrinthMap' : [c]}
+
 
     def __str__(self):
         return "Agent " + self.id + " at [" + str(self.x) + "," + str(self.y) + "]"
@@ -61,8 +63,8 @@ class Agent:
                 pygame.event.post(pygame.event.Event(utils.COLLISION, {"agent" : self, "collider" : self.pathToGoal[0].content}))
                 return
             else:
-                xgoal = self.pathToGoal[0].x * params['tileSize']
-                ygoal = self.pathToGoal[0].y * params['tileSize']
+                xgoal = self.pathToGoal[0].x * params.dict['tileSize']
+                ygoal = self.pathToGoal[0].y * params.dict['tileSize']
 
                 if self.x > xgoal:
                     self.dir = "W"
