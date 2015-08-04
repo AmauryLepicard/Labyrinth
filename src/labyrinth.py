@@ -1,5 +1,7 @@
+import random
+
 import case
-import random, utils
+import utils
 from params import params
 
 
@@ -110,7 +112,7 @@ class Labyrinth:
 
 
     def getCaseAt(self, x, y):
-        return self.caseArray[x][y]
+        return self.caseArray[int(x)][int(y)]
 
     def getOpposite(self, dir):
         if dir == "up":

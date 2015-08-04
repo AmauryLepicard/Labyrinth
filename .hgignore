@@ -2,3 +2,5 @@ syntax: glob
 ./src/*.pyc
 ./src/*.pyo
 ./.hgrc
+src/__pycache__/*.pyc
+.idea

@@ -1,7 +1,12 @@
-import pygame, random, utils
+import random
+
+import pygame
+
+import utils
 from mailServer import mail
 from labyrinth import lab
 from params import params
+
 
 #TODO : systeme de satisfaction
 #       -calculer score en fonction des objectifs atteints
@@ -15,10 +20,12 @@ class Agent:
         self.globalGoal = None
         self.goalReached = False
         self.currentCase = c
-        self.speed = 2
+        self.maxSpeed = 2
         self.id = i
         self.currentDecision = "moveToGoal"
-        self.beliefs = {'health' : 1.0, 'hunger' : 0.0, 'minotaurCoords' : (0, 0), 'exitCoords' : (0, 0), 'labyrinthMap' : [c]}
+        self.health = 1.0
+        self.hunger = 0.0
+        self.beliefs = {'minotaurCoords' : (0, 0), 'exitCoords' : (0, 0), 'labyrinthMap' : [c]}
 
 
     def __str__(self):
@@ -59,7 +66,7 @@ class Agent:
         if len(self.pathToGoal) != 0:
             if self.pathToGoal[0].content != None:
 #                print "Collision : ", self.id, "avec",self.pathToGoal[0].content.id
-                mail.addMessage(self, self.pathToGoal[0].content, "you're blocking me, sucker !!")
+                mail.addMessage(self, self.pathToGoal[0].content, "you're blocking me !!")
                 pygame.event.post(pygame.event.Event(utils.COLLISION, {"agent" : self, "collider" : self.pathToGoal[0].content}))
                 return
             else:
@@ -68,16 +75,16 @@ class Agent:
 
                 if self.x > xgoal:
                     self.dir = "W"
-                    self.x -= self.speed
+                    self.x -= self.getSpeed()
                 if self.x < xgoal:
                     self.dir = "E"
-                    self.x += self.speed
+                    self.x += self.getSpeed()
                 if self.y > ygoal:
                     self.dir = "N"
-                    self.y -= self.speed
+                    self.y -= self.getSpeed()
                 if self.y < ygoal:
                     self.dir = "S"
-                    self.y += self.speed
+                    self.y += self.getSpeed()
 
                 if self.x == xgoal and self.y == ygoal:
                     self.pathToGoal[0].content = self
@@ -87,3 +94,5 @@ class Agent:
             pygame.event.post(pygame.event.Event(utils.ARRIVED, {"agent" : self, "goal" : self.currentCase}))
             return
 
+    def getSpeed(self):
+        return self.maxSpeed * self.health * (1 - self.hunger)
