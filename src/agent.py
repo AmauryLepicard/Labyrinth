@@ -1,14 +1,13 @@
 import random
 
 import pygame
-
 import utils
-from mailServer import mail
 from labyrinth import lab
+from mailServer import mail
 from params import params
 
 
-#TODO : systeme de satisfaction
+# TODO : systeme de satisfaction
 #       -calculer score en fonction des objectifs atteints
 
 class Agent:
@@ -25,12 +24,10 @@ class Agent:
         self.currentDecision = "moveToGoal"
         self.health = 1.0
         self.hunger = 0.0
-        self.beliefs = {'minotaurCoords' : (0, 0), 'exitCoords' : (0, 0), 'labyrinthMap' : [c]}
-
+        self.beliefs = {'minotaurCoords': (0, 0), 'exitCoords': (0, 0), 'labyrinthMap': [c]}
 
     def __str__(self):
         return "Agent " + self.id + " at [" + str(self.x) + "," + str(self.y) + "]"
-
 
     def update(self):
         self.checkGoals()
@@ -42,15 +39,16 @@ class Agent:
     def checkGoals(self):
         if self.currentDecision == "moveToGoal":
             if self.currentCase == self.globalGoal:
-#                print "goal reached", str(self.currentCase)
+                #                print( "goal reached", str(self.currentCase))
                 self.goalReached = True
 
     def checkMessages(self):
         for m in mail.getMessages(self):
-            print m[0].id, "->", self.id, ":", m[1]
+            print(m[0].id, "->", self.id, ":", m[1])
 
     def updateKnowledge(self):
-        pass
+        if self.currentCase not in self.beliefs['labyrinthMap']:
+            self.beliefs['labyrinthMap'].append(self.currentCase)
 
     def takeDecision(self):
         if self.goalReached:
@@ -62,12 +60,13 @@ class Agent:
             self.updatePos()
 
     def updatePos(self):
-#        print "updating pos ", self.id, len(self.pathToGoal)
+        # print( "updating pos ", self.id, len(self.pathToGoal))
         if len(self.pathToGoal) != 0:
             if self.pathToGoal[0].content != None:
-#                print "Collision : ", self.id, "avec",self.pathToGoal[0].content.id
+                #print( "Collision : ", self.id, "avec",self.pathToGoal[0].content.id)
                 mail.addMessage(self, self.pathToGoal[0].content, "you're blocking me !!")
-                pygame.event.post(pygame.event.Event(utils.COLLISION, {"agent" : self, "collider" : self.pathToGoal[0].content}))
+                pygame.event.post(
+                    pygame.event.Event(utils.COLLISION, {"agent": self, "collider": self.pathToGoal[0].content}))
                 return
             else:
                 xgoal = self.pathToGoal[0].x * params.dict['tileSize']
@@ -91,7 +90,7 @@ class Agent:
                     self.pathToGoal = self.pathToGoal[1:]
 
         if len(self.pathToGoal) == 0:
-            pygame.event.post(pygame.event.Event(utils.ARRIVED, {"agent" : self, "goal" : self.currentCase}))
+            pygame.event.post(pygame.event.Event(utils.ARRIVED, {"agent": self, "goal": self.currentCase}))
             return
 
     def getSpeed(self):

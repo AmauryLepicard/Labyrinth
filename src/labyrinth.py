@@ -7,7 +7,7 @@ from params import params
 
 class Labyrinth:
     def __init__(self, w, h):
-        print "Initializing labyrinthe ...",
+        print("Initializing labyrinthe ...")
         self.width = w
         self.height = h
         self.caseArray = []
@@ -17,10 +17,10 @@ class Labyrinth:
                 ligne.append(case.Case("a" + str(i + j * w), i, j))
             self.caseArray.append(ligne)
 
-        print "done"
+        print("done")
 
     def buildPaths(self, startx, starty):
-        print "Building paths ...",
+        print("Building paths ...", )
         tempList = [self.caseArray[startx][starty]]
         delta = [[1, 0], [-1, 0], [0, 1], [0, -1]]
         words = ["right", "left", "down", "up"]
@@ -36,8 +36,8 @@ class Labyrinth:
         while len(tempList) != 0:
             counter += 1
             orig = tempList.pop(0)
-#            print counter, "current case : [", orig.x, orig.y, "] connecting to",
-            order = range(4)
+            #            print( counter, "current case : [", orig.x, orig.y, "] connecting to",)
+            order = [0, 1, 2, 3]
             random.shuffle(order)
             for i in order:
 
@@ -54,16 +54,16 @@ class Labyrinth:
                     if r < proba:
                         visitedArray[destx][desty] = 1
                         tempList.append(self.caseArray[destx][desty])
-#                            print words[i], delta[i],
+                        #                            print( words[i], delta[i],)
                         self.caseArray[orig.x][orig.y].destinations[words[i]] = self.caseArray[destx][desty]
                         self.caseArray[destx][desty].destinations[self.getOpposite(words[i])] = self.caseArray[orig.x][orig.y]
-#                            print "[", self.caseArray[destx][desty].x, self.caseArray[destx][desty].y, "]",
-        print " done"
+        #                            print( "[", self.caseArray[destx][desty].x, self.caseArray[destx][desty].y, "]",)
+        print(" done")
 
     def toString(self):
         tmp = ""
         for j in range(0, self.width):
-            #printing the first line of each case
+            # print(ing the first line of each case)
 #            s = ""
 #            for i in range(0, self.height):
 #                s += " "
@@ -104,10 +104,9 @@ class Labyrinth:
         for i in range(self.width):
             for j in range(self.height):
                 case = self.caseArray[i][j]
-                print "[" + str(case.x) + "," + str(case.y) + "] connected to",
+                print("[" + str(case.x) + "," + str(case.y) + "] connected to",)
                 for dir in case.destinations.keys():
-                    print dir + " : [" + str(case.destinations[dir].x) + "," + str(case.destinations[dir].y) + "]",
-                print
+                    print(dir + " : [" + str(case.destinations[dir].x) + "," + str(case.destinations[dir].y) + "]")
 
 
 
@@ -125,10 +124,10 @@ class Labyrinth:
             return "left"
 
     def computePath(self, start, end):
-#        print "Computing path from ("+str(start.x)+","+str(start.y)+") to ("+str(end.x)+","+str(end.y)+") ...",
+        #        print( "Computing path from ("+str(start.x)+","+str(start.y)+") to ("+str(end.x)+","+str(end.y)+") ...",)
         openList = [start]
         g = [0]
-        h = [utils.getDistManhattan((start.x, start.y), (end.x, end.y))]
+        h = [utils.getDistManhattan(start.x, start.y, end.x, end.y)]
         closedList = []
         parent = {}
         parent[start] = None
@@ -151,18 +150,18 @@ class Labyrinth:
                 while current != start:
                     path = [parent[current]] + path
                     current = parent[current]
-#                print "done"
+                #                print( "done")
                 return path
 
             #Adding the neighbors
             for n in current.getNeighbors():
                 if n.content == None:
                     if n not in closedList:
-                        e = current.g + 1 + utils.getDistManhattan((n.x, n.y), (end.x, end.y))
+                        e = current.g + 1 + utils.getDistManhattan(n.x, n.y, end.x, end.y)
                         if n in openList:
                             if e < n.h + n.g:
                                 n.g = current.g + 1
-                                n.h = utils.getDistManhattan((n.x, n.y), (end.x, end.y))
+                                n.h = utils.getDistManhattan(n.x, n.y, end.x, end.y)
                                 parent[n] = current
                         else:
                             openList.append(n)

@@ -1,8 +1,18 @@
-import agent, utils
+mport
+agent, utils
 from labyrinth import lab
 from params import params
 #from mailServer import mail
 import sys, random, pygame
+# from mailServer import mail
+import pygame
+import random
+import sys
+
+import agent
+import utils
+from labyrinth import lab
+from params import params
 
 black = 0, 0, 0
 
@@ -52,7 +62,8 @@ class Game:
             a.pathToGoal = lab.computePath(lab.getCaseAt(a.x / self.tileWidth, a.y / self.tileHeight), lab.getCaseAt(xg, yg))
             a.globalGoal = lab.getCaseAt(xg, yg)
             self.agents.append(a)
-#           print "agent",cpt,":",self.agents[-1]
+
+    #           print( "agent",cpt,":",self.agents[-1])
 
 #        a = self.agent.Agent(self.tileWidth * 0, self.tileHeight * 0, lab.getCaseAt(0, 0), 1)
 #        a.pathToGoal = lab.computePath(lab.getCaseAt(a.x / self.tileWidth, a.y / self.tileHeight), lab.getCaseAt(0, 6))
@@ -68,12 +79,12 @@ class Game:
 #        oldTick = 0
         tickNumber = 0
         while 1:
-#            print "Nb de messages : " + str(mail.getMailNumber())
+            #            print( "Nb de messages : " + str(mail.getMailNumber()))
         #processing events
-        #    print "tick",
+            #    print( "tick",)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE) or (event.type == pygame.KEYDOWN and event.key == pygame.K_q):
-                    print "exiting..."
+                    print("exiting...")
                     sys.exit()
 
                 if event.type == utils.ARRIVED:
@@ -81,18 +92,18 @@ class Game:
                     agent.globalGoal = lab.getCaseAt(random.randint(0, lab.width - 1), random.randint(0, lab.height - 1))
                     agent.pathToGoal = lab.computePath(lab.getCaseAt(agent.x / self.tileWidth, agent.y / self.tileHeight), agent.globalGoal)
 
-#                    print tickNumber, agent.id, "arrive", "new path : [", utils.pathToString(agent.pathToGoal), "]"
+                #                    print( tickNumber, agent.id, "arrive", "new path : [", utils.pathToString(agent.pathToGoal), "]")
 
                 if event.type == utils.COLLISION:
                     agent = event.dict['agent']
-        #            print tickNumber, agent.id,"collision : old path : [", utils.pathToString(agent.pathToGoal), "]"
+                    #            print( tickNumber, agent.id,"collision : old path : [", utils.pathToString(agent.pathToGoal), "]")
                     newPath = lab.computePath(agent.currentCase, agent.globalGoal)
                     if len(newPath) == 0:
                         agent.globalGoal = None
                     agent.pathToGoal = newPath
-        #                print tickNumber, agent.id,"collision : new path : [", utils.pathToString(agent.pathToGoal), "]"
+                #                print( tickNumber, agent.id,"collision : new path : [", utils.pathToString(agent.pathToGoal), "]")
         #            else:
-        #                print tickNumber, "pas de chemin disponible"
+                #                print( tickNumber, "pas de chemin disponible")
 
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                     utils.pause()
